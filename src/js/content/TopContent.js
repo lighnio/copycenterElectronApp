@@ -7,67 +7,26 @@ import {Product} from './classes/Product'
 export const TopContent = () => {
 
   // CONSTANTES
-  const {productoCliente, setProductoCliente} = useState([]);
+  const [productoCliente, setProductoCliente] = useState([]);
 
 
 useEffect(() => {
-
 	const prueba = async() => {
 		let { docs } = await store.collection('documents').get();
-		//console.log("docs de clase: ", docs);
-		// let arrayObjetos = docs.map(item => ({
-		// 	nuevoProducto: new Product(
-		// 		item.data().color,
-		// 		item.data().document,
-		// 		item.data().name,
-		// 		item.data().status,
-		// 		item.data().total,
-		// 		item.data().type,
-		// 		item.data().userOwner
-		// 	)
-		// }
-		
-		// ))
-
-		setProductoCliente([
-
-			docs.map(item => ({
-					nuevoProducto: new Product(
-						item.data().color,
-						item.data().document,
-						item.data().name,
-						item.data().status,
-						item.data().total,
-						item.data().type,
-						item.data().userOwner
-					)
-				}
-				))
-		])
+		let arrayObjetos = docs.map(item => ({
+			nuevoProducto: new Product(
+				item.data().color,
+				item.data().document,
+				item.data().name,
+				item.data().status,
+				item.data().total,
+				item.data().type,
+				item.data().userOwner
+			)
+		}
+		))
+		setProductoCliente([arrayObjetos])
 	}
-
-	// const getUsuarios = async () => {
-		
-	// 	var { docs } = await store.collection('users').get()
-	// 	const usersArray = docs.map( item => ({
-	// 		users: item._delegate._document.data.partialValue.mapValue.fields,
-	// 		id: item._delegate._document.data.partialValue.mapValue.fields.uid.stringValue
-	// 	}))
-		
-
-	// 	var { docs } = await store.collection('documents').get()
-	// 	const docsArray = docs.map( item => ({
-	// 		documents: item._delegate._document.data.partialValue.mapValue.fields
-	// 	}))
-	// 	// console.log("Docs: ", docsArray)
-	// 	setUsers(
-	// 		// [{
-	// 		usersArray
-	// 		//documentos: docsArray
-	// 	// }]
-	// 	)
-	// }
-	// getUsuarios()
 	prueba()
 	}, [])
 
@@ -101,21 +60,24 @@ useEffect(() => {
                         <th scope="col">Cliente</th>
                         <th scope="col">Documento</th>
                         <th scope="col">Tipo</th>
-                        <th scope="col">{console.log("productoCliente: ", productoCliente)}</th>
+                        <th scope="col">Total</th>
                       </tr>
                     </thead>
                     <tbody>
 
 					{
-						// productoCliente.map( item => (
-						// 	<tr>
-						// 	  <th scope="row">Relleno</th>
-						// 	  <td>{item.documento}</td>
-						// 	  <td>Empastado</td>
-						// 	  <td>Q52.00</td>
-						// 	</tr>
-						// 	))
-					}
+						productoCliente.map( item => (
+							item.map(elemento => (
+								<tr>
+							  <th scope="row">{elemento.nuevoProducto.userOwner.name}</th>
+							  <td><Fragment><a href={elemento.nuevoProducto.docLink} target="_blank">{elemento.nuevoProducto.name}</a><Fragment/></Fragment></td>
+							  <td>{elemento.nuevoProducto.type}</td>
+							  <td>Q{elemento.nuevoProducto.total}</td>
+							  {console.log(elemento)}
+							</tr>
+							))
+							))
+					}	
 
 						{/* <tr>
 						  <th scope="row">Carlos V.</th>
@@ -205,7 +167,7 @@ useEffect(() => {
 								*/}
 								</>
               
-			  <div className="buttons wow fadeInUp">
+			  <div className="buttons wow fadeInUp mt-4">
                 <a
                   className="btn btn-primary btn-customized scroll-link"
                   href="#section-1"
