@@ -1,6 +1,6 @@
 export class Product{
 
-    constructor(color, docLink, name, status = "en proceso", total, type, userOwner){
+    constructor(color, docLink, name, status = "en proceso", total, type, dataxd, idDocumento){
 
     this.color = color;
     this.docLink = docLink;
@@ -8,6 +8,7 @@ export class Product{
     this.status = status;
     this.total = total;
     this.type = type;
-    this.userOwner = userOwner;
+    this.dataxd = dataxd;
+    this.idDocument = idDocumento;
     }
 }
