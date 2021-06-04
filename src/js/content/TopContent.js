@@ -3,31 +3,86 @@ import { store } from "../../firebaseconf";
 
 /* CLASS IMPORTS */
 import {Product} from './classes/Product'
+import {User} from './classes/User'
 
 export const TopContent = () => {
 
   // CONSTANTES
   const [productoCliente, setProductoCliente] = useState([]);
+  const [clientes, setClientes] = useState([]);
 
 
 useEffect(() => {
-	const prueba = async() => {
-		let { docs } = await store.collection('documents').get();
-		let arrayObjetos = docs.map(item => ({
-			nuevoProducto: new Product(
-				item.data().color,
-				item.data().document,
-				item.data().name,
-				item.data().status,
-				item.data().total,
-				item.data().type,
-				item.data().userOwner
-			)
+  
+  const obtenerCliente = async() => {
+    let { docs } = await store.collection('users').get()
+
+    setClientes([
+
+      docs.map(item => ({
+        nuevoCliente: new User(
+          item.data().email,
+          item.data().myOrders,
+          item.data().name,
+          item.data().photoURL,
+          item.data().uid
+        )
+      }))
+
+    ])
+  }
+
+
+  obtenerCliente()
+
+const consulta = async(id, prueba) => {
+	
+	let nombre = ""
+	prueba.map(item => {
+		if(id === item.data().uid){
+			 nombre = item.data().name
 		}
-		))
-		setProductoCliente([arrayObjetos])
+
+	})
+	return nombre
+}
+
+	const obtenerProducto = async() => {
+		let { docs } = await store.collection('documents').where("status", "!=", "completado").get();
+    	let prueba = await store.collection('users').get()
+    // console.log(docs[0].id)
+    // console.log(prueba.docs[0].data())
+    let auxNombre;
+
+    //console.log(item.data().userOwner.id)
+
+      for (let j = 0; j < prueba.docs.length; j++) {
+        // console.log(prueba.docs[j].id)
+        // console.log(prueba.docs[j].data().name)
+      }
+
+		setProductoCliente([  
+
+			docs.map((item) => ({
+					nuevoProducto: new Product(
+						item.data().color,
+						item.data().document,
+						item.data().name,
+						item.data().status,
+						item.data().total,
+						item.data().type,
+						consulta(item.data().userOwner.id, prueba.docs)
+
+					)
+				}
+				))
+		])
 	}
-	prueba()
+
+  
+
+	obtenerProducto()
+  
 	}, [])
 
 
@@ -61,23 +116,24 @@ useEffect(() => {
                         <th scope="col">Documento</th>
                         <th scope="col">Tipo</th>
                         <th scope="col">Total</th>
+                        <th scope="col">Actualizar Estado</th>
                       </tr>
                     </thead>
                     <tbody>
 
 					{
 						productoCliente.map( item => (
-							item.map(elemento => (
-								<tr>
-							  <th scope="row">{elemento.nuevoProducto.userOwner.name}</th>
-							  <td><Fragment><a href={elemento.nuevoProducto.docLink} target="_blank">{elemento.nuevoProducto.name}</a><Fragment/></Fragment></td>
+                item.map(elemento => (
+                  <tr>
+								<th scope="row">{console.log(elemento.nuevoProducto.userOwner)}</th>
+							  <td><a href={elemento.nuevoProducto.docLink} target="_blank">{elemento.nuevoProducto.name}</a></td>
 							  <td>{elemento.nuevoProducto.type}</td>
 							  <td>Q{elemento.nuevoProducto.total}</td>
-							  {console.log(elemento)}
+                <td></td>
 							</tr>
+                ))
 							))
-							))
-					}	
+					}
 
 						{/* <tr>
 						  <th scope="row">Carlos V.</th>
